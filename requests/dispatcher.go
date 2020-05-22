@@ -180,8 +180,6 @@ func (d *Dispatcher) ReadUrl() string {
 		d.FilePtrUrls, _ = os.Open(d.Args.UrlFile)
 		d.ScannerUrls = bufio.NewScanner(d.FilePtrUrls)
 	}
-	d.ScannerUrls.Split(bufio.ScanLines)
-	d.ScannerUrls.Text()
 
 	if d.ScannerUrls.Scan() {
 		url := d.ScannerUrls.Text()
