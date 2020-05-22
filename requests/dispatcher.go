@@ -159,6 +159,7 @@ func (d *Dispatcher) runBatch(jobs map[string]*Job) {
 //load all params
 func (d *Dispatcher) loadParams() {
 	d.Args = service.Args
+	d.Headers = d.readHeaders()
 	if d.Args.UrlFile != "" {
 		return
 	} else if d.Args.Url != "" {
@@ -167,7 +168,6 @@ func (d *Dispatcher) loadParams() {
 		log.Fatalf("You must specify at once one url! ", d.Args.Url)
 	}
 	d.Timeout = d.Args.Timeout
-	d.Headers = d.readHeaders()
 }
 
 //reads urls form file specified in -u param or from argument
