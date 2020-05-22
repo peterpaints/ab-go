@@ -53,7 +53,11 @@ func run(clearScreen bool, testing bool) {
 					service.Args.Port,
 					templates.Formatter.FormatResult(dispatcher.Result))
 
-				fmt.Printf("\n\n\n Last response: \n\n %s", dispatcher.Result.LastResult)
+				fmt.Printf("\n\n All responses: %s", len(dispatcher.Result.Responses))
+				for _, response := range dispatcher.Result.Responses {
+					fmt.Println(response)
+					fmt.Println("\n\n")
+				}
 
 				server.Send <- dispatcher.Result
 			}
@@ -64,6 +68,12 @@ func run(clearScreen bool, testing bool) {
 		fmt.Printf("#AB-GO testing tool. \n\n Testing %s.  \n Results: \n %s",
 			service.Args.ApiName,
 			templates.Formatter.FormatResult(dispatcher.Result))
+
+		fmt.Printf("\n\n All responses: %s", len(dispatcher.Result.Responses))
+		for _, response := range dispatcher.Result.Responses {
+			fmt.Println(response)
+			fmt.Println("\n\n")
+		}
 
 		if dispatcher.Args.SlackUrl != "" {
 			server.SendToSlack(*dispatcher)
