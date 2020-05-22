@@ -41,6 +41,7 @@ type Result struct {
 	Max        string
 	Avg        string
 	LastResult string
+	Responses  []map[interface {}]interface {}
 }
 
 func CreateDispatcher() *Dispatcher {
@@ -115,6 +116,14 @@ func (d *Dispatcher) Run() {
 		completedLastIndex := d.Completed[len(d.Completed)-1]
 		lastJob := d.Jobs[completedLastIndex]
 		d.Result.LastResult = lastJob.Response.RawResponse
+	}
+	for _, job := range d.Jobs {
+		resp := map[interface{}]interface{} {
+			"request_url": job.Request.Url,
+			"request_data": job.Request.PostData,
+			"response": job.Response.RawResponse,
+		}
+		d.Result.Responses = append(d.Result.Responses, resp)
 	}
 
 	return
