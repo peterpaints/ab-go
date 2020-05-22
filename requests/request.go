@@ -3,6 +3,7 @@ package requests
 import (
 	"bytes"
 	"compress/gzip"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -29,7 +30,8 @@ func (r *Request) Run(jobId string) *Response {
 	var reader io.ReadCloser
 	var error error
 	body := bytes.NewBuffer([]byte(r.PostData))
-	request, error := http.NewRequest("POST", r.Url, body)
+	request, error := http.NewRequest(r.Method, r.Url, body)
+	fmt.Printf("\n\n URL: %s\n", r.Url)
 	request.Header.Add("Accept-Encoding", "gzip, deflate")
 	for _, header := range r.Headers {
 		headersArray := strings.Split(header, ":")

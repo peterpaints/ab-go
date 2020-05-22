@@ -41,6 +41,7 @@ type Result struct {
 	Max        string
 	Avg        string
 	LastResult string
+	Responses  []map[interface {}]interface {}
 }
 
 func CreateDispatcher() *Dispatcher {
@@ -116,6 +117,14 @@ func (d *Dispatcher) Run() {
 		lastJob := d.Jobs[completedLastIndex]
 		d.Result.LastResult = lastJob.Response.RawResponse
 	}
+	for _, job := range d.Jobs {
+		resp := map[interface{}]interface{} {
+			"request_url": job.Request.Url,
+			"request_data": job.Request.PostData,
+			"response": job.Response.RawResponse,
+		}
+		d.Result.Responses = append(d.Result.Responses, resp)
+	}
 
 	return
 }
@@ -150,6 +159,7 @@ func (d *Dispatcher) runBatch(jobs map[string]*Job) {
 //load all params
 func (d *Dispatcher) loadParams() {
 	d.Args = service.Args
+	d.Headers = d.readHeaders()
 	if d.Args.UrlFile != "" {
 		return
 	} else if d.Args.Url != "" {
@@ -158,7 +168,6 @@ func (d *Dispatcher) loadParams() {
 		log.Fatalf("You must specify at once one url! ", d.Args.Url)
 	}
 	d.Timeout = d.Args.Timeout
-	d.Headers = d.readHeaders()
 }
 
 //reads urls form file specified in -u param or from argument
@@ -171,8 +180,6 @@ func (d *Dispatcher) ReadUrl() string {
 		d.FilePtrUrls, _ = os.Open(d.Args.UrlFile)
 		d.ScannerUrls = bufio.NewScanner(d.FilePtrUrls)
 	}
-	d.ScannerUrls.Split(bufio.ScanLines)
-	d.ScannerUrls.Text()
 
 	if d.ScannerUrls.Scan() {
 		url := d.ScannerUrls.Text()
